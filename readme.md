@@ -1,6 +1,5 @@
 # React Native webRTCApp
 
-[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 This is a demo video + audio calling app build in react native which supports webRTC.WebRTC is a free, open-source project that provides web browsers and mobile applications with real-time communication via simple application programming interfaces.
 
 
