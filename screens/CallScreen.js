@@ -29,7 +29,7 @@ export default function CallScreen({navigation, ...props}) {
   // Video Scrs
   const [localStream, setLocalStream] = useState({toURL: () => null});
   const [remoteStream, setRemoteStream] = useState({toURL: () => null});
-  const [conn, setConn] = useState(new WebSocket('WEBSOCKET_ENDPOINT')); // add your websocket endpoint
+  const [conn, setConn] = useState(new WebSocket('ws://3.20.188.26:8080'));
   const [yourConn, setYourConn] = useState(
     //change the config as you need
     new RTCPeerConnection({
