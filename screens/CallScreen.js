@@ -29,19 +29,14 @@ export default function CallScreen({navigation, ...props}) {
   // Video Scrs
   const [localStream, setLocalStream] = useState({toURL: () => null});
   const [remoteStream, setRemoteStream] = useState({toURL: () => null});
-  const [conn, setConn] = useState(new WebSocket('ws://3.20.188.26:8080'));
+  const [conn, setConn] = useState(new WebSocket('wss://webrtc.skyrockets.space:8080'));
   const [yourConn, setYourConn] = useState(
     //change the config as you need
     new RTCPeerConnection({
       iceServers: [
         {
-          urls: 'stun:stun.l.google.com:19302',  
-        }, {
-          urls: 'stun:stun1.l.google.com:19302',    
-        }, {
-          urls: 'stun:stun2.l.google.com:19302',    
+          urls: 'stun:webrtc.skyrockets.space:3478',  
         }
-
       ],
     }),
   );
