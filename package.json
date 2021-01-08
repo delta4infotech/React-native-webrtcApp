@@ -12,18 +12,20 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.10.0",
     "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-community/toolbar-android": "0.1.0-rc.2",
     "@react-navigation/native": "^5.2.3",
     "@react-navigation/stack": "^5.2.18",
     "react": "16.11.0",
-    "react-native": "0.62.2",
+    "react-native": "^0.62.2",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-incall-manager": "^3.2.7",
+    "react-native-modal": "^11.6.1",
     "react-native-paper": "^3.9.0",
     "react-native-reanimated": "^1.8.0",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.7.0",
     "react-native-vector-icons": "^6.6.0",
-    "react-native-webrtc": "^1.75.3"
+    "react-native-webrtc": "^1.87.2"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
