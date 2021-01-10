@@ -11,6 +11,9 @@ This is a demo video + audio calling app build in react native which supports we
 ### Video
 [![Everything Is AWESOME](https://img.youtube.com/vi/7i4sT1B1yz8/0.jpg)](https://www.youtube.com/watch?v=7i4sT1B1yz8")
 
+#### how to set up your own WebSockets and Stun Servers ?
+https://github.com/skyrocketscommunity/React-native-webrtcApp/wiki/set-up-your-own-WebSockets-Signaling-Server-and-Stun-Servers
+
 #### More queries ?🧐 
 write us on [SkyrocketsOfficial@gmail.com](mailto:skyrocketsofficial@gmail.com)
 
