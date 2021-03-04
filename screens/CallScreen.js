@@ -20,6 +20,7 @@ import {
   mediaDevices,
   registerGlobals,
 } from 'react-native-webrtc';
+// import {acc} from 'react-native-reanimated';
 
 const STUN_SERVER = 'stun:webrtc.skyrockets.space:3478';
 const SOCKET_URL = 'wss://webrtc.skyrockets.space:8080';
@@ -46,13 +47,13 @@ export default function CallScreen({navigation, ...props}) {
   const [callActive, setCallActive] = useState(false);
   const [incomingCall, setIncomingCall] = useState(false);
   const [otherId, setOtherId] = useState('');
-  const [callToUsername, setCallToUsername] = useState(null);
+  const [callToUsername, setCallToUsername] = useState('');
   const connectedUser = useRef(null);
   const offerRef = useRef(null);
 
   useFocusEffect(
     useCallback(() => {
-      AsyncStorage.getItem('userId').then(id => {
+      AsyncStorage.getItem('userId').then((id) => {
         console.log(id);
         if (id) {
           setUserId(id);
@@ -108,7 +109,7 @@ export default function CallScreen({navigation, ...props}) {
       setSocketActive(true);
     };
     //when we got a message from a signaling server
-    conn.current.onmessage = msg => {
+    conn.current.onmessage = (msg) => {
       const data = JSON.parse(msg.data);
       // console.log('Data --------------------->', data);
       switch (data.type) {
@@ -137,7 +138,7 @@ export default function CallScreen({navigation, ...props}) {
           break;
       }
     };
-    conn.current.onerror = function(err) {
+    conn.current.onerror = function (err) {
       console.log('Got error', err);
     };
     initLocalVideo();
@@ -153,13 +154,13 @@ export default function CallScreen({navigation, ...props}) {
   }, [callActive]);
 
   const registerPeerEvents = () => {
-    yourConn.current.onaddstream = event => {
+    yourConn.current.onaddstream = (event) => {
       console.log('On Add Remote Stream');
       setRemoteStream(event.stream);
     };
 
     // Setup ice handling
-    yourConn.current.onicecandidate = event => {
+    yourConn.current.onicecandidate = (event) => {
       if (event.candidate) {
         send({
           type: 'candidate',
@@ -195,35 +196,43 @@ export default function CallScreen({navigation, ...props}) {
           // optional: videoSourceId ? [{sourceId: videoSourceId}] : [],
         },
       })
-      .then(stream => {
+      .then((stream) => {
         // Got stream!
         setLocalStream(stream);
 
         // setup stream listening
         yourConn.current.addStream(stream);
       })
-      .catch(error => {
+      .catch((error) => {
         // Log error
       });
     // });
   };
 
-  const send = message => {
+  const send = (message) => {
     //attach the other peer username to our messages
     if (connectedUser.current) {
       message.name = connectedUser.current;
       // console.log('Connected iser in end----------', message);
     }
+    console.log('Message', message);
     conn.current.send(JSON.stringify(message));
   };
 
   const onCall = () => {
-    setCalling(true);
-    connectedUser.current = callToUsername;
-    console.log('Caling to', callToUsername);
-    // create an offer
+    sendCall(callToUsername);
+    setTimeout(() => {
+      sendCall(callToUsername);
+    }, 1000);
+  };
 
-    yourConn.current.createOffer().then(offer => {
+  const sendCall = (receiverId) => {
+    setCalling(true);
+    const otherUser = receiverId;
+    connectedUser.current = otherUser;
+    console.log('Caling to', otherUser);
+    // create an offer
+    yourConn.current.createOffer().then((offer) => {
       yourConn.current.setLocalDescription(offer).then(() => {
         console.log('Sending Ofer');
         // console.log(offer);
@@ -244,6 +253,7 @@ export default function CallScreen({navigation, ...props}) {
     setIncomingCall(true);
     setOtherId(name);
     // acceptCall();
+    if (callActive) acceptCall();
   };
 
   const acceptCall = async () => {
@@ -254,21 +264,21 @@ export default function CallScreen({navigation, ...props}) {
     console.log('Accepting CALL', name, offer);
     yourConn.current
       .setRemoteDescription(offer)
-      .then(function() {
+      .then(function () {
         connectedUser.current = name;
         return yourConn.current.createAnswer();
       })
-      .then(function(answer) {
+      .then(function (answer) {
         yourConn.current.setLocalDescription(answer);
         send({
           type: 'answer',
           answer: answer,
         });
       })
-      .then(function() {
+      .then(function () {
         // Send the answer to the remote peer using the signaling server
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Error acessing camera', err);
       });
 
@@ -288,14 +298,14 @@ export default function CallScreen({navigation, ...props}) {
   };
 
   //when we got an answer from a remote user
-  const handleAnswer = answer => {
+  const handleAnswer = (answer) => {
     setCalling(false);
     setCallActive(true);
     yourConn.current.setRemoteDescription(new RTCSessionDescription(answer));
   };
 
   //when we got an ice candidate from a remote user
-  const handleCandidate = candidate => {
+  const handleCandidate = (candidate) => {
     setCalling(false);
     // console.log('Candidate ----------------->', candidate);
     yourConn.current.addIceCandidate(new RTCIceCandidate(candidate));
@@ -324,7 +334,7 @@ export default function CallScreen({navigation, ...props}) {
 
     handleLeave();
 
-    AsyncStorage.removeItem('userId').then(res => {
+    AsyncStorage.removeItem('userId').then((res) => {
       navigation.push('Login');
     });
   };
@@ -384,15 +394,19 @@ export default function CallScreen({navigation, ...props}) {
           label="Enter Friends Id"
           mode="outlined"
           style={{marginBottom: 7}}
-          onChangeText={text => setCallToUsername(text)}
+          onChangeText={(text) => setCallToUsername(text)}
         />
+        <Text>
+          SOCKET ACTIVE:{socketActive ? 'TRUE' : 'FASLE'}, FRIEND ID:
+          {callToUsername || otherId}
+        </Text>
         <Button
           mode="contained"
           onPress={onCall}
           loading={calling}
           //   style={styles.btn}
           contentStyle={styles.btnContent}
-          disabled={!(socketActive && userId.length > 0)}>
+          disabled={!socketActive || callToUsername === '' || callActive}>
           Call
         </Button>
         <Button
@@ -421,7 +435,7 @@ export default function CallScreen({navigation, ...props}) {
         </View>
       </View>
 
-      <Modal isVisible={incomingCall}>
+      <Modal isVisible={incomingCall && !callActive}>
         <View
           style={{
             backgroundColor: 'white',
